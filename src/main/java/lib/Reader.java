@@ -12,7 +12,7 @@ public class Reader {
 
     //reading input's values with help inputFile.
     public Reader(String fileName) throws IOException {
-        input = new ArrayList<String>();
+        input = new ArrayList<>();
         Files.lines(Paths.get(fileName), StandardCharsets.UTF_8).forEach(input::add);
     }
 

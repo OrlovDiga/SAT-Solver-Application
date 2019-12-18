@@ -2,12 +2,14 @@ package app.data;
 
 import java.util.HashMap;
 import java.util.List;
-
+//класс представляет из себя модель символов с их буленским значением(грубо говоря
+//объекты этого класса используются для подстановки в объект класса FormulaCNF)
 public class Model {
     HashMap<Symbol, Boolean> model = new HashMap<>();
 
     public Model() {}
 
+    //конструктор для заполнения хеш мапы( по дефолту в значению bool летит true)
     public Model(Literal... literals) {
         for (Literal l: literals) {
             model.put(l.getId(), l.isAssignment());
@@ -16,16 +18,17 @@ public class Model {
 
     public Model(Symbol... symbols) {
         for (Symbol s: symbols) {
-            model.put(s, false);
+            model.put(s, true);
         }
     }
 
     public Model(List<Symbol> symbolList) {
         for (int i = 0; i < symbolList.size(); i++) {
-            model.put(symbolList.get(i), false);
+            model.put(symbolList.get(i), true);
         }
     }
 
+    //метод проверки выполнения определенного клоза при заданных значениях
     public Boolean doneClause(Clause clause) {
         Boolean result = null;
         if (clause.isTruth()) {
@@ -33,7 +36,7 @@ public class Model {
         } else if (!clause.isTruth()) {
             result = false;
         } else {
-           /* Boolean val = null;
+            Boolean val = null;
             for (Symbol s: clause.getPositiveSymbols()) {
                 val = model.get(s);
 
@@ -44,10 +47,21 @@ public class Model {
                     }
                 }
             }
-        }*/
+
+            for (Symbol s: clause.getNegativeSymbols()) {
+                val = model.get(s);
+
+                if (val != null) {
+                    if (Boolean.FALSE.equals(val)) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
            //isprav
-            boolean unassignedSymbols = false;
-            Boolean value             = null;
+            /*boolean unassignedSymbols = false;
+            Boolean value = null;
             for (Symbol positive : clause.getPositiveSymbols()) {
                 value = model.get(positive);
                 if (value != null) {
@@ -78,11 +92,12 @@ public class Model {
                     }
                 }
             }
-        }
+        }*/
 
         return result;
     }
 
+    //полчение символа в хэш мапе данного объекта класса
     public  Boolean getValue(Symbol symbol) {
         return model.get(symbol);
     }
@@ -96,6 +111,16 @@ public class Model {
         return m;
     }
 
+    public String printVals() {
+        StringBuilder temp = new StringBuilder();
+
+        for (Symbol s: model.keySet()) {
+            temp.append(s + " = " + model.get(s) + "\n");
+        }
+
+        return temp.toString();
+    }
+    //переопределенный метод toString
     @Override
     public String toString() {
         return model.toString();
